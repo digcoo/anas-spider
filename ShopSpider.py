@@ -6,6 +6,7 @@ import traceback
 import jsonpickle
 import json
 from bs4 import BeautifulSoup
+import Geohash
 
 from HttpUtils import *
 
@@ -41,15 +42,15 @@ def parse_shop_list_html_page(content):
                 shop_type = shop_item.find_all("div", "txt")[0].find_all("div", "tag-addr")[0].find_all("a")[0].get_text().strip()
                 shop_dist = shop_item.find_all("div", "txt")[0].find_all("div", "tag-addr")[0].find_all("a")[1].get_text().strip()
                 shop_addr = shop_item.find_all("div", "txt")[0].find_all("div", "tag-addr")[0].find_all("span", "addr")[0].get_text().strip()
-                shop_group_buys_map = parse_groupon_list(shop_item)
-                shop_info = {"logo":logo_url,
-                            "name":shop_name.encode('utf8'),
+#                shop_group_buys_map = parse_groupon_list(shop_item)
+                shop_info = {
+#			     "logo":logo_url,
+#                            "name":shop_name.encode('utf8'),
                              "url":shop_url,
                             "avg":shop_avg,
-                            "type":shop_type.encode('utf8'),
-                            "dist":shop_dist.encode('utf8'),
-                            "addr":shop_addr.encode('utf8'),
-                            "groupon":shop_group_buys_map}
+                            "type":shop_type,
+                            "dist":shop_dist
+}
 
                 shop_expand_info = get_shop_detail_info1(shop_url) if get_shop_detail_info1(shop_url) is not None else get_shop_detail_info2(shop_url)
                 if shop_expand_info is not None:
@@ -94,18 +95,50 @@ def get_shop_detail_info1(url):
 
         soup = BeautifulSoup(content, "lxml")
         shop_expand_addr = soup.find(id="basic-info").find_all("div", "address")[0].find_all("span", "item")[0].get_text().strip()
+
+	#tel
         shop_expand_tel = soup.find(id="basic-info").find_all("p", "tel")[0].find_all("span", "item")[0].get_text().strip()
-        shop_expand_open = soup.find(id="basic-info").find_all("div", "other")[0].find_all("p", "info")[0].find_all("span", "item")[0].get_text().strip()
+
+	#open_time
+	shop_expand_open = ''
+	infos = soup.find(id="basic-info").find_all("div", "other")[0].find_all("p", "info")
+	if infos is not None and len(infos) > 0:
+	    for info in infos:
+		text = info.find_all("span", "info-name")[0].get_text().encode('utf-8')
+		if text.find('时间') > 0:
+		    shop_expand_open = info.find_all("span", "item")[0].get_text().strip()
+		    break
+
+	#photo
+	photo_url = 'http://www.dianping.com/ajax/json/shopDynamic/shopTabs?shopId=90951360&cityId=1&shopName=Regiustea%E5%A4%A9%E5%BE%A1%E7%9A%87%E8%8C%B6&power=5&mainCategoryId=244&shopType=10&shopCityId=1&_token=eJxVTt1ugjAYfZdeN9ACbYHEC3WOieKGMowzXiAwJEAtlAx12buvJu5iyZecn%2B%2Bc5HyDbp4BFyOELAzBV94BF2ANaRRA0Ev1IZgSzBgxqGNBkP73mG1CcOziJ%2BDuiYMgNenhbqyV3mPDRtBG6AAVNShkjB2gYam7Z%2BYqAk59L1xdH4ZBy8qEi5IXWnpudHk6C91BDsEmRWoJUI0mUg2F1QOTB%2FZ%2FOlDTVVaWBVcs9y%2FRRlqy%2FVwHMorfr8gMbi%2Br1%2BWsXt2u9nS6Lj%2BaRRETP%2BfPfZO0p5iTSWoNzmbyOpt6YufVbeJdmtDbMZLvGuN8rP0238YirURnZQFfCF1u34Qe663PPVxQsZwXODuG4bgaR3Ul8nA0Aj%2B%2FFDJm5g%3D%3D&uuid=40e49af0-9fce-a1c6-0e90-dbacb64cb3cb.1516376513&platform=1&partner=150&originUrl=http%3A%2F%2Fwww.dianping.com%2Fshop%2F90951360'
+	shop_style_photos = []
 
         #map
-        shop_gps = ""
-        if content.find("lng:") > -1:
-            gps_str_start = content.find("lng:")-1
-            suf_str = content[gps_str_start:]
-            gps_str_end = suf_str.find("}") + 1
-            shop_gps = content[gps_str_start : gps_str_start + gps_str_end]
+        shop_extra = {}
+	if content.find("window.shop_config") > -1:
+	    js_str_start = content.find("window.shop_config")
+	    js_str_suf = content[js_str_start:]
+	    js_str_start = js_str_suf.find("{")
+	    js_str_end = js_str_suf.find("</script>")
+	    js_str = js_str_suf[js_str_start : js_str_end]
+	    json_obj = jsonpickle.decode(js_str)
+	    shop_extra['shop_name']  = json_obj['shopName']
+	    shop_extra['shop_addr']  = json_obj['address']
+	    shop_extra['shop_id'] =  json_obj['shopId']
+	    shop_extra['shop_full_name'] =  json_obj['fullName']
+	    shop_extra['shop_lat'] = json_obj['shopGlat']
+	    shop_extra['shop_lng'] = json_obj['shopGlng']
+	    shop_extra['shop_type'] = json_obj['shopType']
+	    shop_extra['shop_first_category'] = json_obj['categoryName']
+	    shop_extra['shop_second_category'] = json_obj['mainCategoryName']
+	    shop_extra['shop_logo'] = json_obj['defaultPic'][:json_obj['defaultPic'].find('.jpg')+4]
+	    shop_extra['shop_geohash'] = Geohash.encode(float(json_obj['shopGlat']), float(json_obj['shopGlng']), 8) 
+	shop_extra['shop_tel'] = shop_expand_tel
+	shop_extra['shop_open'] = shop_expand_open
+	shop_extra['shop_photos'] = shop_style_photos
 
-        return {"expand_addr" : shop_expand_addr, "tel" : shop_expand_tel, "open_time" : shop_expand_open, "gps" : shop_gps}
+	return shop_extra
+	
     except Exception, e:
         traceback.print_exc(e)
         print url
@@ -142,13 +175,12 @@ def get_shop_detail_info2(url):
 
 
 # get_shop_list("http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84%E9%BE%99%E4%B9%8B%E6%A2%A6/p1")
-#
-# for index in range(1, 1000):
-#     url = base_url.format(index)
-#     shop_page_list = get_shop_list(url)
-#     print jsonpickle.encode(shop_page_list)
-#     time.sleep(1)
-#     break
+
+for index in range(1, 1000):
+     url = base_url.format(index)
+     shop_page_list = get_shop_list(url)
+     print json.dumps(shop_page_list, ensure_ascii=False,indent=2)
+     time.sleep(10)
 
 # print jsonpickle.encode(get_shop_detail_info2("http://www.dianping.com/shop/6212826"))
-print jsonpickle.encode(get_shop_detail_info1("http://www.dianping.com/shop/92218635"))
+#print json.dumps(get_shop_detail_info1("http://www.dianping.com/shop/2972056"), ensure_ascii=False,indent=2)
