@@ -56,7 +56,7 @@ def get_all_item_photos(url):
         traceback.print_exc()
     return None
 
-
+'''
 categorys = get_item_category()
 print json.dumps(categorys, ensure_ascii=False,indent=4)
 
@@ -66,4 +66,6 @@ for category in categorys:
     item_photos = get_page_item_photos('https:' + category_link)
     print len(item_photos)
     break
+'''
 
+print get_page_item_photos('https://list.tmall.com/search_product.htm?spm=a3204.7084713.1996500281.1.YTOuRF&user_id=725677994&cat=51454011&active=1&style=g&acm=lb-zebra-27092-331834.1003.4.457096&sort=td&scm=1003.4.lb-zebra-27092-331834.OTHER_14434945515601_457096&industryCatId=51462017#J_Filter')

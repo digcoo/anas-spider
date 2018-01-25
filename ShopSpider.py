@@ -11,7 +11,8 @@ from MysqlClient import *
 
 from HttpUtils import *
 
-base_url = 'http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84/p{0}?aid=20245884%2C6212826%2C15998012'
+#base_url = 'http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84/p{0}?aid=20245884%2C6212826%2C15998012'
+base_url = 'http://www.dianping.com/search/keyword/1/10_%E6%A1%82%E6%9E%97%E8%B7%AF/p{0}'
 
 def get_shop_list(url):
     try:
@@ -39,7 +40,7 @@ def parse_shop_list_html_page(content):
                 shop_info = {}
 #                logo_url = shop_item.find_all("div", "pic")[0].find_all("img")[0]['data-src'].strip()
 #                shop_name = shop_item.find_all("div", "txt")[0].find_all("div", "tit")[0].find_all("a")[0].get_text().strip()
-#                shop_url = shop_item.find_all("div", "txt")[0].find_all("div", "tit")[0].find_all("a")[0]["href"].strip()
+                shop_url = shop_item.find_all("div", "txt")[0].find_all("div", "tit")[0].find_all("a")[0]["href"].strip()
                 shop_avg = shop_item.find_all("div", "txt")[0].find_all("div", "comment")[0].find_all("a")[1].find_all("b")[0].get_text().strip()
                 shop_type = shop_item.find_all("div", "txt")[0].find_all("div", "tag-addr")[0].find_all("a")[0].get_text().strip()
                 shop_dist = shop_item.find_all("div", "txt")[0].find_all("div", "tag-addr")[0].find_all("a")[1].get_text().strip()
@@ -181,16 +182,16 @@ def get_shop_detail_info2(url):
 
 
 # get_shop_list("http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84%E9%BE%99%E4%B9%8B%E6%A2%A6/p1")
-'''
+
 for index in range(1, 1000):
     url = base_url.format(index)
     shop_page_list = get_shop_list(url)
     print json.dumps(shop_page_list, ensure_ascii=False,indent=2)
-#     time.sleep(10)
-    break
-'''
-# print jsonpickle.encode(get_shop_detail_info2("http://www.dianping.com/shop/6212826"))
-print json.dumps(get_shop_detail_info1("http://www.dianping.com/shop/17985960"), ensure_ascii=False,indent=2)
+    time.sleep(10)
+#    break
 
-shop_info = get_shop_detail_info1("http://www.dianping.com/shop/17985960")
-MysqlClient.get_instance().add_shop(shop_info)
+# print jsonpickle.encode(get_shop_detail_info2("http://www.dianping.com/shop/6212826"))
+#print json.dumps(get_shop_detail_info1("http://www.dianping.com/shop/17985960"), ensure_ascii=False,indent=2)
+
+#shop_info = get_shop_detail_info1("http://www.dianping.com/shop/17985960")
+#MysqlClient.get_instance().add_shop(shop_info)
