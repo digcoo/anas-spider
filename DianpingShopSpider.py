@@ -20,7 +20,7 @@ base_url = 'http://www.dianping.com/search/keyword/1/10_%E6%A1%82%E6%9E%97%E8%B7
 headers = {}
 headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36"
 headers["Referer"] = "http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84/p1?aid=20245884%2C6212826%2C15998012"
-headers['Cookie'] = '_lxsdk_cuid=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; _lxsdk=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; cy=1; cye=shanghai; _hc.v=0f32a3b6-7385-0888-333e-5c3045e7cad3.1515161390; s_ViewType=10; aburl=1; wed_user_path=27760|0; __mta=251920054.1515203025830.1515203025830.1515203025830.1; _lxsdk_s=160c901323c-8b8-3a9-dad%7C%7C218'
+headers["Cookie"] = 'cy=1; cityid=1; cye=shanghai; wed_user_path=27810|0; aburl=1; cy=1; cye=shanghai; _lxsdk_cuid=1615b98491fc8-06bee841b104dd-4323461-100200-1615b98491f7c; _lxsdk=1615b98491fc8-06bee841b104dd-4323461-100200-1615b98491f7c; _hc.v="\"861aac4a-b627-48c2-bc7c-3402f9f3923b.1517660078\""; _lxsdk_s=1615b984922-fe5-8e4-fc5%7C%7C68'
 
 
 #商铺详情页面1
@@ -76,8 +76,8 @@ def get_shop_detail_info1(url):
 	return shop_extra
 	
     except Exception, e:
-        traceback.print_exc(e)
-        print url
+#       traceback.print_exc(e)
+        print 'exception : ' + url
     return None
 
 #商铺详情页面样式2
@@ -100,14 +100,13 @@ def get_shop_detail_info2(url):
 
         return {"expand_addr" : shop_expand_addr, "tel" : shop_expand_tel, "open_time" : shop_expand_open}
     except Exception, e:
-        traceback.print_exc(e)
+#        traceback.print_exc(e)
         print url
     return None
 
 def get_shop_id_list(url):
     try:
 	content = HttpUtils.get(url, headers, 'utf-8')
-	print content
 	start = content.find('brandList') + len('brandList') + 1
 	target_brands_str = content[start : ]
 	end = start + target_brands_str.find(']') + 1
@@ -131,28 +130,31 @@ def get_shop_id_list(url):
 
 shop_ids = get_shop_id_list('http://www.dianping.com/shop/4600410')
 print jsonpickle.encode(shop_ids)
+shop_ids = [4619365, 9027818, 5441863, 18340046, 4698384, 5165991, 5321259, 18339562, 90943549, 5279943, 79488371, 82620601, 8010491, 6636134, 5345442, 5141088, 19701153, 5164689, 95679722, 6037506, 13763694, 72441676, 24619883, 78978734, 6858857, 23091824, 8009996, 77358221, 49420192, 92549664, 72459376, 77358557, 77255540, 5520216, 77354393, 92678979, 92508843, 33508084, 19112878, 98452845, 79272347, 83247636, 91689747, 4698402, 77358417, 16715583, 21575561, 77354640, 76764167, 80671556, 5355844, 92328200, 81316061, 49119956, 83327249, 77492667, 57543758, 16978740, 77358585, 67191419, 22132769, 75175751, 67392092, 8848222, 18242874, 4619011, 93536844, 77358165, 67004261, 5443954, 5281183, 66070562, 77358321, 5432596, 91919801, 96683316, 23149737, 83130218, 98452888, 82980740, 83363438, 77358480, 77358381, 37943422, 81482456, 4698364, 68107295, 5320024, 5172076, 77354907, 49927799, 66838904, 5165953, 35512165, 77354517, 18210180, 82953833, 77358456, 97231797, 5636065, 81190028, 79246380, 98453914, 9965204, 5491057, 5432629, 83170934, 8998933, 74610791, 82166093, 22689086, 83049719, 91591811, 42345636, 23220912, 69585903, 18228879, 5166007, 5307235, 5381419, 21875288, 5172088, 20859629, 93485460, 97482834, 94787400, 63902719, 95021703, 80970830, 82730366, 50445984, 83302982, 73408340, 13925762, 58844183, 6102709, 5456191, 73969883, 92341505, 83127419, 26233182, 58208387, 58331210, 18210116, 93317551, 5387252, 77358583, 77358226, 77460424, 24788425, 98454239, 80963358, 43611638, 82423014, 93186304, 5700857, 98453489, 17960438, 77355904, 77358196, 66623904, 98454257, 98453579, 97817996, 9775389, 58605165, 74623332, 69657346, 5235698, 5093885, 73149099, 5636129, 23993596, 67648450, 77358514, 80890656, 97566074, 71740542, 18094073, 18210341, 19467836, 97281098, 4698371, 74623338, 98453144, 81785148, 77355067, 24070957, 98453984, 98453018, 58478769, 22269922, 13877002, 69560107, 67008469, 77358280, 5321249, 77131336, 98454476, 98453147, 70357728, 98454182, 77355565, 82903485, 72458166, 69115168, 18478025, 92369659, 6183218, 5460332, 21877804, 5636180, 49056966, 5165945, 49501617, 5718257, 5115647, 5451806, 26954618, 6212826, 13863949, 77358157, 77358430, 66893061, 5164676, 77355844, 18478238, 67440079, 13765120, 18068408, 96722081, 4698389, 4698374, 77358496, 82699311, 77358526, 92832832, 5518121, 77355451, 9000792, 72458250, 27332024, 22895381, 66256690, 5291874, 97175041, 5424825, 82182799, 98454231, 97173496, 98454048, 98454246, 18008287, 27381414, 38052062, 5636163, 5273694, 79151513, 77355041, 27314106, 67437135, 18181672, 80634025, 23603723, 76070367, 4698393, 77355599, 72458956, 11571898, 79614395, 4296270, 18393976, 5172081, 27339105, 24267878, 5313927, 69277238, 5172078, 5281905, 8890388, 98148963, 67861251, 81366400, 68174190, 62315672, 82709956, 13714413, 71333447, 19352529, 5319996, 80200868, 77154956]
 err_ids = []
 suc_shops = []
+'''
 for shop_id in shop_ids:
     url = 'http://www.dianping.com/shop/' + str(shop_id)
-    print url
+#    print url
     shop_info = get_shop_detail_info1(url)
     if shop_info is None:
-	print str(shop_id) + ':2'
 	shop_info = get_shop_detail_info2(url)
 	if shop_info is None:
+	    print 'no data : ' + str(shop_id)
 	    err_ids.append(shop_id)
 	    continue
-    target_shop_info = { your_key: shop_info[your_key] for your_key in ['shop_geohash', 'shop_logo', 'shop_lat', 'shop_lng', 'shop_tel', 'shop_name', 'shop_second_category', 'shop_id'] }
-    print target_shop_info
+    target_shop_info = { your_key: shop_info[your_key] for your_key in ['shop_geohash', 'shop_logo', 'shop_lat', 'shop_lng', 'shop_tel', 'shop_name', 'shop_second_category', 'shop_id', 'shop_addr', 'shop_first_category'] }
 
-#    print json.dumps(target_shop_info, ensure_ascii=False, indent=2)
+    FileUtils.list_to_csv([list(target_shop_info.viewvalues())], '/home/ubuntu/digcoo/anas-spider/shops_data', 'xinzhuang_longzhimeng_' + str(shop_id) + '.csv')
 
-    suc_shops.append(list(target_shop_info.viewvalues()))
+#    suc_shops.append(list(target_shop_info.viewvalues()))
 
-#    time.sleep(10)
-    break
+    time.sleep(10)
+#    break
 
-
-FileUtils.list_to_csv(suc_shops, '/home/ubuntu/digcoo/anas-spider/shops_data', 'xinzhuang_longzhimeng.csv')
+#FileUtils.list_to_csv(suc_shops, '/home/ubuntu/digcoo/anas-spider/shops_data', 'xinzhuang_longzhimeng.csv')
 print jsonpickle.encode(err_ids)
+'''
+
+print get_shop_detail_info2('http://www.dianping.com/shop/18340046') 
