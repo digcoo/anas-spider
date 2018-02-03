@@ -22,7 +22,7 @@ def get_shop_list(url):
         headers['Cookie'] = '_lxsdk_cuid=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; _lxsdk=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; cy=1; cye=shanghai; _hc.v=0f32a3b6-7385-0888-333e-5c3045e7cad3.1515161390; s_ViewType=10; aburl=1; wed_user_path=27760|0; __mta=251920054.1515203025830.1515203025830.1515203025830.1; _lxsdk_s=160c901323c-8b8-3a9-dad%7C%7C218'
 
         content = HttpUtils.get(url, headers, 'utf-8')
-#	print content
+	print content
         shop_list = parse_shop_list_html_page(content)
         return shop_list
     except:
@@ -98,7 +98,7 @@ def get_shop_detail_info1(url):
         headers['Cookie'] = '_lxsdk_cuid=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; _lxsdk=160c6a7a179c8-02393e4445bc62-b7a103e-100200-160c6a7a179c8; cy=1; cye=shanghai; _hc.v=0f32a3b6-7385-0888-333e-5c3045e7cad3.1515161390; s_ViewType=10; aburl=1; wed_user_path=27760|0; __mta=251920054.1515203025830.1515203025830.1515203025830.1; _lxsdk_s=160c901323c-8b8-3a9-dad%7C%7C218'
 
         content = HttpUtils.get(url, headers, 'utf-8')
-#	print content
+	print content
 
         soup = BeautifulSoup(content, "lxml")
 #        shop_expand_addr = soup.find(id="basic-info").find_all("div", "address")[0].find_all("span", "item")[0].get_text().strip()
@@ -182,17 +182,16 @@ def get_shop_detail_info2(url):
 
 
 # get_shop_list("http://www.dianping.com/search/keyword/1/0_%E8%8E%98%E5%BA%84%E9%BE%99%E4%B9%8B%E6%A2%A6/p1")
-'''
+
 for index in range(1, 1000):
     url = base_url.format(index)
     shop_page_list = get_shop_list(url)
     print json.dumps(shop_page_list, ensure_ascii=False,indent=2)
     time.sleep(10)
 #    break
-'''
 
 # print jsonpickle.encode(get_shop_detail_info2("http://www.dianping.com/shop/6212826"))
-print json.dumps(get_shop_detail_info1("http://www.dianping.com/shop/17985960"), ensure_ascii=False,indent=2)
+#print json.dumps(get_shop_detail_info1("http://www.dianping.com/shop/17985960"), ensure_ascii=False,indent=2)
 
 #shop_info = get_shop_detail_info1("http://www.dianping.com/shop/17985960")
 #MysqlClient.get_instance().add_shop(shop_info)

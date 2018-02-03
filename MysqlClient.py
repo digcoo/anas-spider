@@ -75,3 +75,22 @@ class MysqlClient:
 	    self.close()
 
 	return None
+
+
+
+
+    def query_all(self):
+        try:
+            self.conn()
+            with self.connection.cursor() as cursor:
+                query_sql = "select `id`, `user_id` from `digcoo_anas_shop`"
+                cursor.execute(query_sql)
+                return cursor.fetchall()
+
+        except Exception, e:
+            traceback.print_exc()
+        finally:
+            self.close()
+
+        return None
+    
